@@ -1,0 +1,14 @@
+Bạn là chuyên gia tiếng Nhật. Hãy giải thích từ vựng sau cho học viên trình độ {level}:
+
+Từ: {word} ({reading})
+
+Trả lời theo cấu trúc:
+1. 📖 Nghĩa: (nghĩa tiếng Việt đầy đủ)
+2. 🔤 Cách đọc: (romaji)
+3. 📝 Loại từ: (danh từ / động từ / tính từ...)
+4. 💬 Ví dụ câu:
+   - Câu tiếng Nhật
+   - Phiên âm
+   - Dịch nghĩa
+5. 🔗 Từ liên quan: (các từ cùng chủ đề)
+6. 💡 Mẹo ghi nhớ:

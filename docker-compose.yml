@@ -1,0 +1,62 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    container_name: learn-japanese-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/learn_japanese
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-in-production-256bit}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - learn-japanese-net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: learn-japanese-postgres
+    environment:
+      POSTGRES_DB: learn_japanese
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d learn_japanese"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - learn-japanese-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: learn-japanese-redis
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - learn-japanese-net
+
+volumes:
+  pg_data:
+
+networks:
+  learn-japanese-net:
+    driver: bridge
